@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Github, Linkedin, Twitter, Mail, ExternalLink, ArrowRight, FileText, ChevronRight } from 'lucide-react';
 import { RESUME_DATA } from './constants';
 import Timeline from './components/Timeline';
-import { SocialLink, Project, Experience } from './types';
+import { SocialLink, Project, Experience, Education } from './types';
 
 // -- Sub Components --
 
@@ -55,6 +55,20 @@ const ExperienceCard: React.FC<{ job: Experience }> = ({ job }) => (
           </span>
         ))}
       </div>
+    </div>
+  </div>
+);
+
+const EducationCard: React.FC<{ education: Education }> = ({ education }) => (
+  <div className="group relative grid grid-cols-1 md:grid-cols-8 gap-4 mb-12 transition-all">
+    <div className="md:col-span-2 text-xs text-zinc-500 font-medium uppercase tracking-wide mt-1">
+      {education.period}
+    </div>
+    <div className="md:col-span-6">
+      <h3 className="font-medium text-zinc-100 text-lg group-hover:text-emerald-400 transition-colors flex items-center gap-2">
+        {education.degree}
+        <span className="text-zinc-500 font-normal text-base"> — {education.institution}</span>
+      </h3>
     </div>
   </div>
 );
@@ -212,9 +226,35 @@ export default function App() {
             <section id="experience" className="mb-16 scroll-mt-16 md:mb-24 lg:mb-36 lg:scroll-mt-24">
               <SectionHeader title="Experience" />
               <div>
-                {RESUME_DATA.experience.map(job => (
-                  <ExperienceCard key={job.id} job={job} />
-                ))}
+                {(() => {
+                  // Combine experience and education, then sort by date
+                  const combined: Array<{ type: 'experience' | 'education'; data: Experience | Education; sortYear: number }> = [];
+                  
+                  // Add experiences
+                  RESUME_DATA.experience.forEach(exp => {
+                    const yearMatch = exp.period.match(/\d{4}/);
+                    const year = yearMatch ? parseInt(yearMatch[0]) : 0;
+                    combined.push({ type: 'experience', data: exp, sortYear: year });
+                  });
+                  
+                  // Add education
+                  RESUME_DATA.education.forEach(edu => {
+                    const yearMatch = edu.period.match(/\d{4}/);
+                    const year = yearMatch ? parseInt(yearMatch[0]) : 0;
+                    combined.push({ type: 'education', data: edu, sortYear: year });
+                  });
+                  
+                  // Sort by year (descending - most recent first)
+                  combined.sort((a, b) => b.sortYear - a.sortYear);
+                  
+                  return combined.map(item => 
+                    item.type === 'experience' ? (
+                      <ExperienceCard key={item.data.id} job={item.data as Experience} />
+                    ) : (
+                      <EducationCard key={item.data.id} education={item.data as Education} />
+                    )
+                  );
+                })()}
               </div>
               <a href={resumeUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center font-medium leading-tight text-zinc-100 font-semibold group" aria-label="View Full Resume">
                 <span className="border-b border-transparent pb-px transition group-hover:border-accent motion-reduce:transition-none">

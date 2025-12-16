@@ -10,7 +10,7 @@ export const RESUME_DATA: ResumeData = {
     { platform: "GitHub", url: "https://github.com/vinayanand3", iconName: "Github" },
     { platform: "LinkedIn", url: "https://linkedin.com/in/vinayanand2", iconName: "Linkedin" },
     { platform: "Email", url: "mailto:vinayanand2@gmail.com", iconName: "Mail" },
-    { platform: "Resume", url: "https://raw.githubusercontent.com/vinayanand3/Vinay-resume/main/Vinay_Resume.pdf", iconName: "FileText" }
+    { platform: "Resume", url: "/Vinay-resume/Vinay Bhaskarla_Resume.pdf", iconName: "FileText" }
   ],
   experience: [
     {
@@ -46,6 +46,14 @@ export const RESUME_DATA: ResumeData = {
       technologies: ["Catia V5", "Teamcenter", "Vismockup", "KBE", "Sheet Metal"]
     },
     {
+      id: "exp-6",
+      company: "University of Michigan-Dearborn",
+      role: "Graduate Research Assistant",
+      period: "Jun 2014 — Jun 2015",
+      description: "Conducted fatigue analysis of spot welds of automotive BIW using Hypermesh and Abaqus under tensile stress. Designed a rubber shredding machine for extracting rubber from used tires of automobiles using Catia V5.",
+      technologies: ["Catia V5", "Hypermesh", "Abaqus", "Fatigue Analysis", "Research"]
+    },
+    {
       id: "exp-5",
       company: "Hyundai Motor India Engineering",
       role: "Research Engineer",
@@ -59,7 +67,7 @@ export const RESUME_DATA: ResumeData = {
       id: "edu-1",
       institution: "Georgia Institute of Technology",
       degree: "MS in Computer Science (OMSCS)",
-      period: "2023 — Present"
+      period: "2024 — Present"
     },
     {
       id: "edu-2",
@@ -69,7 +77,7 @@ export const RESUME_DATA: ResumeData = {
     },
     {
       id: "edu-3",
-      institution: "JNTU Hyderabad",
+      institution: "Jawaharlal Nehru Technological University",
       degree: "B.Tech in Mechanical Engineering",
       period: "2006 — 2010"
     }
