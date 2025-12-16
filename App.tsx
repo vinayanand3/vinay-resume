@@ -119,7 +119,7 @@ export default function App() {
   // Simple scroll spy to update active section in sidebar (desktop only)
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['about', 'experience', 'projects', 'contact'];
+      const sections = ['about', 'experience', 'education', 'projects', 'contact'];
       for (const section of sections) {
         const element = document.getElementById(section);
         if (element) {
@@ -163,7 +163,7 @@ export default function App() {
               {/* Navigation (Desktop) */}
               <nav className="nav hidden lg:block mt-16" aria-label="In-page jump links">
                 <ul className="w-max">
-                  {['about', 'experience', 'projects'].map((item) => (
+                  {['about', 'experience', 'education', 'projects'].map((item) => (
                     <li key={item}>
                       <button 
                         onClick={() => scrollTo(item)}
@@ -171,7 +171,7 @@ export default function App() {
                       >
                         <span className={`mr-4 h-px transition-all bg-zinc-600 group-hover:w-16 group-hover:bg-zinc-200 ${activeSection === item ? 'w-16 bg-zinc-100' : 'w-8'}`}></span>
                         <span className="text-xs font-bold uppercase tracking-widest">
-                          {item}
+                          {item === 'experience' ? 'Professional Experience' : item === 'education' ? 'Educational Qualifications' : item}
                         </span>
                       </button>
                     </li>
@@ -222,9 +222,9 @@ export default function App() {
               </div>
             </section>
 
-            {/* EXPERIENCE */}
+            {/* PROFESSIONAL EXPERIENCE */}
             <section id="experience" className="mb-16 scroll-mt-16 md:mb-24 lg:mb-36 lg:scroll-mt-24">
-              <SectionHeader title="Experience" />
+              <SectionHeader title="Professional Experience" />
               <div>
                 {(() => {
                   // Helper function to extract sort year from period string
@@ -241,38 +241,16 @@ export default function App() {
                     return years && years.length > 0 ? parseInt(years[years.length - 1]) : 0;
                   };
                   
-                  // Combine experience and education, then sort by date
-                  const combined: Array<{ type: 'experience' | 'education'; data: Experience | Education; sortYear: number }> = [];
-                  
-                  // Add experiences
-                  RESUME_DATA.experience.forEach(exp => {
-                    const sortYear = getSortYear(exp.period);
-                    combined.push({ type: 'experience', data: exp, sortYear });
+                  // Sort experiences by date (descending - most recent first)
+                  const sortedExperiences = [...RESUME_DATA.experience].sort((a, b) => {
+                    const yearA = getSortYear(a.period);
+                    const yearB = getSortYear(b.period);
+                    return yearB - yearA;
                   });
                   
-                  // Add education
-                  RESUME_DATA.education.forEach(edu => {
-                    const sortYear = getSortYear(edu.period);
-                    combined.push({ type: 'education', data: edu, sortYear });
-                  });
-                  
-                  // Sort: experience first (by year descending), then education (by year descending)
-                  combined.sort((a, b) => {
-                    // First, separate by type: experience comes before education
-                    if (a.type !== b.type) {
-                      return a.type === 'experience' ? -1 : 1;
-                    }
-                    // If same type, sort by year (descending - most recent first)
-                    return b.sortYear - a.sortYear;
-                  });
-                  
-                  return combined.map(item => 
-                    item.type === 'experience' ? (
-                      <ExperienceCard key={item.data.id} job={item.data as Experience} />
-                    ) : (
-                      <EducationCard key={item.data.id} education={item.data as Education} />
-                    )
-                  );
+                  return sortedExperiences.map(exp => (
+                    <ExperienceCard key={exp.id} job={exp} />
+                  ));
                 })()}
               </div>
               <a href={resumeUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center font-medium leading-tight text-zinc-100 font-semibold group" aria-label="View Full Resume">
@@ -281,6 +259,39 @@ export default function App() {
                 </span>
                 <ArrowRight className="ml-1 h-4 w-4 shrink-0 -translate-x-1 transition-transform group-hover:translate-x-0 group-hover:text-accent motion-reduce:transition-none" />
               </a>
+            </section>
+
+            {/* EDUCATIONAL QUALIFICATIONS */}
+            <section id="education" className="mb-16 scroll-mt-16 md:mb-24 lg:mb-36 lg:scroll-mt-24">
+              <SectionHeader title="Educational Qualifications" />
+              <div>
+                {(() => {
+                  // Helper function to extract sort year from period string
+                  // Uses the last year in the period (end year) for proper chronological sorting
+                  const getSortYear = (period: string): number => {
+                    // Check if period contains "Present" - use current year for sorting
+                    if (period.includes('Present')) {
+                      const years = period.match(/\d{4}/g);
+                      // If there's a year before "Present", use it; otherwise use current year
+                      return years && years.length > 0 ? parseInt(years[years.length - 1]) : new Date().getFullYear();
+                    }
+                    // Extract all years and use the last one (end year)
+                    const years = period.match(/\d{4}/g);
+                    return years && years.length > 0 ? parseInt(years[years.length - 1]) : 0;
+                  };
+                  
+                  // Sort education by date (descending - most recent first)
+                  const sortedEducation = [...RESUME_DATA.education].sort((a, b) => {
+                    const yearA = getSortYear(a.period);
+                    const yearB = getSortYear(b.period);
+                    return yearB - yearA;
+                  });
+                  
+                  return sortedEducation.map(edu => (
+                    <EducationCard key={edu.id} education={edu} />
+                  ));
+                })()}
+              </div>
             </section>
 
             {/* PROJECTS */}
