@@ -93,30 +93,40 @@ const EducationCard: React.FC<{ education: Education }> = ({ education }) => (
   </div>
 );
 
-const ProjectCard: React.FC<{ project: Project; onSelect: (project: Project) => void }> = ({ project, onSelect }) => (
-  <button
-    type="button"
-    onClick={(e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      onSelect(project);
-    }}
-    className="group block w-full text-left cursor-pointer"
-  >
-    <div className="relative grid grid-cols-1 md:grid-cols-8 gap-4 mb-12 hover:bg-zinc-900/40 p-0 md:-mx-4 md:p-4 rounded-lg transition-all border border-transparent hover:border-zinc-800/50">
+const ProjectCard: React.FC<{ project: Project; onSelect: (project: Project) => void }> = ({ project, onSelect }) => {
+  const [imageError, setImageError] = useState(false);
+  
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('Project card clicked:', project.title);
+    onSelect(project);
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={handleClick}
+      className="group block w-full text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent/50"
+    >
+      <div className="relative grid grid-cols-1 md:grid-cols-8 gap-4 mb-12 hover:bg-zinc-900/40 p-0 md:-mx-4 md:p-4 rounded-lg transition-all border border-transparent hover:border-zinc-800/50">
       <div className="md:col-span-2 mt-1">
         <div className="rounded border border-zinc-800 bg-zinc-900 overflow-hidden h-20 w-32 md:w-full md:h-24 relative">
           {/* Placeholder for image - using a subtle gradient if image fails or just as style */}
-          {project.image ? (
+          {!project.image || imageError ? (
+            <div className="w-full h-full bg-gradient-to-br from-zinc-800 to-zinc-900" />
+          ) : (
             <img
               src={project.image}
               alt={project.title}
               loading="lazy"
               decoding="async"
               className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity"
+              onError={() => {
+                // Silently handle image errors - don't log to console
+                setImageError(true);
+              }}
             />
-          ) : (
-             <div className="w-full h-full bg-gradient-to-br from-zinc-800 to-zinc-900" />
           )}
         </div>
       </div>
@@ -138,7 +148,8 @@ const ProjectCard: React.FC<{ project: Project; onSelect: (project: Project) => 
       </div>
     </div>
   </button>
-);
+  );
+};
 
 const ProjectDetail: React.FC<{ project: Project; onBack: () => void }> = ({ project, onBack }) => (
   <article className="space-y-6">

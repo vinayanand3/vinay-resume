@@ -124,12 +124,12 @@ export const RESUME_DATA: ResumeData = {
     {
       id: "proj-4",
       title: "Ford - F150 Lightning, Mondeo, Lincoln MKZ",
-      description: "F150 Lightning, Ford Mondeo, Lincoln MKZ - Steering columns and gears motion mapping, plastic cooling ducts design, wireharness routing.",
-      technologies: ["Catia V5", "Teamcenter", "KBE", "Motion Mapping", "EV Packaging"],
+      description: "Ford Electrification BIW & Component Design - Designed new Body-in-White (BIW) components to package next-generation EV battery packs and electronics for Ford Mondeo, F150, and HEV lines.",
+      technologies: ["Catia V5", "Teamcenter", "KBE", "Motion Mapping", "EV Packaging", "BIW Design", "FEA"],
       details: [
-        "Designed steering columns and performed motion mapping for steering gears using KBE tools across multiple Ford platforms including F150 Lightning, Mondeo, and Lincoln MKZ.",
-        "Designed plastic cooling ducts and wireharness routing to accommodate high-voltage battery systems and electric powertrain components.",
-        "Evaluated 2D drawings and digital bucks in Teamcenter/Vismockup to verify GD&T, packaging clearances, and assembly feasibility before releasing to production."
+        "Challenge: Tasked with designing new Body-in-White (BIW) components to package next-generation EV battery packs and electronics within existing vehicle platforms for the Ford Mondeo, F150, and HEV lines.",
+        "Action: Designed front floor reinforcements using CATIA V5 to accommodate Gen-III air-cooled HV batteries for the Mondeo, collaborating with CAE teams to optimize FEA results. Engineered OBD mounting brackets for the Electric F150 ensuring full compliance with production standards, and designed complex blow-molded HV battery cooling ducts for HEV models.",
+        "Result: Delivered production-feasible designs on time, facilitating the integration of critical EV hardware. Recognized with a Ford Recognition Award for the successful design of the complex HV battery cooling ducts."
       ],
       link: "https://github.com/vinayanand3",
       image: "/vinay-resume/projects/ford-steering-components/image.jpg"
