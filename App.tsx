@@ -14,6 +14,27 @@ const IconMap = {
   FileText
 };
 
+const LazyTimeline = React.lazy(() => import('./components/Timeline'));
+
+function useMediaQuery(query: string) {
+  const [matches, setMatches] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia(query).matches;
+  });
+
+  useEffect(() => {
+    const mql = window.matchMedia(query);
+    const onChange = () => setMatches(mql.matches);
+    mql.addEventListener('change', onChange);
+    setMatches(mql.matches);
+    return () => {
+      mql.removeEventListener('change', onChange);
+    };
+  }, [query]);
+
+  return matches;
+}
+
 const SocialButton: React.FC<{ link: SocialLink }> = ({ link }) => {
   const Icon = IconMap[link.iconName as keyof typeof IconMap] || ExternalLink;
   return (
@@ -85,7 +106,13 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => (
         <div className="rounded border border-zinc-800 bg-zinc-900 overflow-hidden h-20 w-32 md:w-full md:h-24 relative">
           {/* Placeholder for image - using a subtle gradient if image fails or just as style */}
           {project.image ? (
-            <img src={project.image} alt={project.title} className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity" />
+            <img
+              src={project.image}
+              alt={project.title}
+              loading="lazy"
+              decoding="async"
+              className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity"
+            />
           ) : (
              <div className="w-full h-full bg-gradient-to-br from-zinc-800 to-zinc-900" />
           )}
@@ -115,9 +142,13 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => (
 
 export default function App() {
   const [activeSection, setActiveSection] = useState('about');
+  const isDesktop = useMediaQuery('(min-width: 1024px)');
 
-  // Simple scroll spy to update active section in sidebar (desktop only)
+  const sectionIds = useMemo(() => ['about', 'experience', 'projects'], []);
+
+  // Use IntersectionObserver instead of scroll listeners (less main-thread churn).
   useEffect(() => {
+<<<<<<< HEAD
     const handleScroll = () => {
       const sections = ['about', 'experience', 'education', 'projects', 'contact'];
       for (const section of sections) {
@@ -134,13 +165,44 @@ export default function App() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+=======
+    const elements = sectionIds
+      .map((id) => document.getElementById(id))
+      .filter(Boolean) as HTMLElement[];
+>>>>>>> 3a2a6ae52a94ad07bdd7c6717bcbc407fe3f269c
 
-  const scrollTo = (id: string) => {
+    if (elements.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // Pick the most visible intersecting section.
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => (b.intersectionRatio ?? 0) - (a.intersectionRatio ?? 0));
+        const top = visible[0];
+        if (top?.target?.id) setActiveSection(top.target.id);
+      },
+      {
+        // “Active” when section header is near top portion of viewport.
+        root: null,
+        rootMargin: '-20% 0px -70% 0px',
+        threshold: [0.01, 0.1, 0.25, 0.5, 0.75, 1],
+      }
+    );
+
+    elements.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [sectionIds]);
+
+  const scrollTo = useCallback((id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     setActiveSection(id);
-  };
+  }, []);
 
-  const resumeUrl = RESUME_DATA.socials.find(s => s.platform === 'Resume')?.url || "#";
+  const resumeUrl = useMemo(
+    () => RESUME_DATA.socials.find((s) => s.platform === 'Resume')?.url || '#',
+    []
+  );
 
   return (
     <div className="min-h-screen bg-background text-zinc-400 selection:bg-accent/20 selection:text-accent font-sans">
@@ -163,7 +225,11 @@ export default function App() {
               {/* Navigation (Desktop) */}
               <nav className="nav hidden lg:block mt-16" aria-label="In-page jump links">
                 <ul className="w-max">
+<<<<<<< HEAD
                   {['about', 'experience', 'education', 'projects'].map((item) => (
+=======
+                  {sectionIds.map((item) => (
+>>>>>>> 3a2a6ae52a94ad07bdd7c6717bcbc407fe3f269c
                     <li key={item}>
                       <button 
                         onClick={() => scrollTo(item)}
@@ -180,9 +246,13 @@ export default function App() {
               </nav>
 
               {/* Timeline Animation */}
-              <div className="hidden lg:block">
-                 <Timeline />
-              </div>
+              {isDesktop && (
+                <div className="hidden lg:block">
+                  <Suspense fallback={<div className="mt-10 mb-8 pr-8 h-12" />}>
+                    <LazyTimeline />
+                  </Suspense>
+                </div>
+              )}
             </div>
 
             {/* Socials & Resume */}
