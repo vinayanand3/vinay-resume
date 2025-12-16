@@ -227,21 +227,33 @@ export default function App() {
               <SectionHeader title="Experience" />
               <div>
                 {(() => {
+                  // Helper function to extract sort year from period string
+                  // Uses the last year in the period (end year) for proper chronological sorting
+                  const getSortYear = (period: string): number => {
+                    // Check if period contains "Present" - use current year for sorting
+                    if (period.includes('Present')) {
+                      const years = period.match(/\d{4}/g);
+                      // If there's a year before "Present", use it; otherwise use current year
+                      return years && years.length > 0 ? parseInt(years[years.length - 1]) : new Date().getFullYear();
+                    }
+                    // Extract all years and use the last one (end year)
+                    const years = period.match(/\d{4}/g);
+                    return years && years.length > 0 ? parseInt(years[years.length - 1]) : 0;
+                  };
+                  
                   // Combine experience and education, then sort by date
                   const combined: Array<{ type: 'experience' | 'education'; data: Experience | Education; sortYear: number }> = [];
                   
                   // Add experiences
                   RESUME_DATA.experience.forEach(exp => {
-                    const yearMatch = exp.period.match(/\d{4}/);
-                    const year = yearMatch ? parseInt(yearMatch[0]) : 0;
-                    combined.push({ type: 'experience', data: exp, sortYear: year });
+                    const sortYear = getSortYear(exp.period);
+                    combined.push({ type: 'experience', data: exp, sortYear });
                   });
                   
                   // Add education
                   RESUME_DATA.education.forEach(edu => {
-                    const yearMatch = edu.period.match(/\d{4}/);
-                    const year = yearMatch ? parseInt(yearMatch[0]) : 0;
-                    combined.push({ type: 'education', data: edu, sortYear: year });
+                    const sortYear = getSortYear(edu.period);
+                    combined.push({ type: 'education', data: edu, sortYear });
                   });
                   
                   // Sort by year (descending - most recent first)
