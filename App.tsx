@@ -463,12 +463,7 @@ export default function App() {
               </section>
             )}
 
-            {/* FOOTER */}
-            <footer className="max-w-md pb-16 text-sm text-zinc-500 sm:pb-0">
-              <p>
-                Built with <span className="text-zinc-400">React</span> and <span className="text-zinc-400">Tailwind CSS</span>.
-              </p>
-            </footer>
+            {/* FOOTER (intentionally empty) */}
 
           </main>
         </div>
