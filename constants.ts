@@ -94,8 +94,7 @@ export const RESUME_DATA: ResumeData = {
         "Automated report generation so that engineering, purchasing, and supplier quality can review a single, consistent data pack instead of manually stitching together spreadsheets."
       ],
       link: "https://github.com/vinayanand3",
-      // Add an image to `public/projects/nissan-flex-sourcing/` and set it here when ready.
-      // image: "/vinay-resume/projects/nissan-flex-sourcing/<your-image>.png"
+      image: "/vinay-resume/projects/nissan-flex-sourcing/flex-sourcing.png"
     },
     {
       id: "proj-2",
