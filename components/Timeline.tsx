@@ -39,7 +39,8 @@ const Timeline: React.FC = () => {
       .sort((a, b) => a.year - b.year)
       .filter((e) => e.year > 0);
 
-    const startYear = 2006; // Adjusted for B.Tech start/end
+    // Start the timeline a bit earlier for visual breathing room (prevents left clipping).
+    const startYear = 2004;
     const endYear = new Date().getFullYear();
     const totalDuration = Math.max(1, endYear - startYear);
 
@@ -48,11 +49,31 @@ const Timeline: React.FC = () => {
 
   const getPosition = (year: number) => ((year - startYear) / totalDuration) * 100;
 
+  const labelYears = useMemo(() => {
+    const years = Array.from(new Set(events.map((e) => e.year))).sort((a, b) => a - b);
+    return years;
+  }, [events]);
+
   return (
     <div className="w-full mt-10 mb-8 opacity-0 animate-fade-in overflow-visible" style={{ animationFillMode: 'forwards' }}>
-      <div className="flex justify-between text-[10px] uppercase tracking-wider text-zinc-600 font-mono mb-3">
-        <span>{startYear}</span>
-        <span>Present</span>
+      {/* Year annotations: only show years that exist in Education/Experience periods */}
+      <div className="relative h-4 mb-3">
+        {labelYears.map((year, idx) => {
+          const position = getPosition(year);
+          // Clamp to prevent labels from being cut off at the edges.
+          const left = `clamp(10px, ${position}%, calc(100% - 10px))`;
+          return (
+            <div
+              key={year}
+              className={`absolute text-[10px] uppercase tracking-wider text-zinc-600 font-mono ${
+                idx % 2 === 0 ? 'translate-y-0' : 'translate-y-2'
+              }`}
+              style={{ left }}
+            >
+              <span className="-translate-x-1/2 relative inline-block">{year}</span>
+            </div>
+          );
+        })}
       </div>
       
       <div className="relative w-full h-12 flex items-center group/timeline">
@@ -68,6 +89,8 @@ const Timeline: React.FC = () => {
         {/* Event Nodes */}
         {events.map((event, index) => {
           const position = getPosition(event.year);
+          // Keep the marker inside the container even when it's at the start/end of the range.
+          const left = `clamp(6px, ${position}%, calc(100% - 6px))`;
           const isHovered = hoveredIndex === index;
           const isEducation = event.type === 'education';
           
@@ -75,7 +98,7 @@ const Timeline: React.FC = () => {
             <div 
               key={event.id}
               className="absolute"
-              style={{ left: `${position}%` }}
+              style={{ left }}
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
             >
