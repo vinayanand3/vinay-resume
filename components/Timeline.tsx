@@ -58,19 +58,17 @@ const Timeline: React.FC = () => {
     <div className="w-full mt-10 mb-8 opacity-0 animate-fade-in overflow-visible" style={{ animationFillMode: 'forwards' }}>
       {/* Year annotations: only show years that exist in Education/Experience periods */}
       <div className="relative h-4 mb-3">
-        {labelYears.map((year, idx) => {
+        {labelYears.map((year) => {
           const position = getPosition(year);
           // Clamp to prevent labels from being cut off at the edges.
           const left = `clamp(10px, ${position}%, calc(100% - 10px))`;
           return (
             <div
               key={year}
-              className={`absolute text-[10px] uppercase tracking-wider text-zinc-600 font-mono ${
-                idx % 2 === 0 ? 'translate-y-0' : 'translate-y-2'
-              }`}
+              className="absolute -translate-x-1/2 whitespace-nowrap text-[10px] uppercase tracking-wider text-zinc-600 font-mono"
               style={{ left }}
             >
-              <span className="-translate-x-1/2 relative inline-block">{year}</span>
+              {year}
             </div>
           );
         })}
