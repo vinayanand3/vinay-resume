@@ -99,7 +99,6 @@ const ProjectCard: React.FC<{ project: Project; onSelect: (project: Project) => 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('Project card clicked:', project.title);
     onSelect(project);
   };
 
@@ -251,12 +250,12 @@ export default function App() {
   );
 
   return (
-    <div className="min-h-screen bg-background text-zinc-400 selection:bg-accent/20 selection:text-accent font-sans">
-      <div className="max-w-screen-xl mx-auto px-6 md:px-12 lg:px-24 py-12 lg:py-0">
-        <div className="lg:flex lg:justify-between lg:gap-12">
+    <div className="min-h-screen bg-background text-zinc-400 selection:bg-accent/20 selection:text-accent font-sans overflow-x-hidden">
+      <div className="max-w-screen-xl mx-auto px-6 md:px-12 lg:px-16 xl:px-24 py-12 lg:py-0">
+        <div className="lg:flex lg:justify-between lg:gap-10 xl:gap-12">
           
           {/* -- LEFT COLUMN (Fixed Header) -- */}
-          <header className="lg:sticky lg:top-0 lg:flex lg:max-h-screen lg:w-[45%] lg:flex-col lg:justify-between lg:py-24">
+          <header className="lg:sticky lg:top-0 lg:h-screen lg:w-[45%] lg:flex-none lg:py-24 lg:overflow-y-auto lg:pr-3 min-w-0">
             <div>
               <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-zinc-100">
                 <a href="/">{RESUME_DATA.name}</a>
@@ -316,7 +315,7 @@ export default function App() {
           </header>
 
           {/* -- RIGHT COLUMN (Scrollable Content) -- */}
-          <main className="pt-24 lg:w-[55%] lg:py-24">
+          <main className="pt-24 lg:flex-1 lg:min-w-0 lg:py-24">
             
             {/* ABOUT */}
             <section id="about" className="mb-16 scroll-mt-16 md:mb-24 lg:mb-36 lg:scroll-mt-24">
