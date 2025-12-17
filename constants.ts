@@ -2,7 +2,7 @@ import { ResumeData } from './types';
 
 export const RESUME_DATA: ResumeData = {
   name: "Vinay Anand Bhaskarla",
-  title: "Design Engineer | OMSCS Student",
+  title: "Mechanical Design Engineer | Georgia Tech Student",
   bio: "Design Engineer with 10+ years in Automotive (BIW, Product Design). Proficient in CAD (Catia/NX) and Python for engineering automation. Currently pursuing a Master's in Computer Science at Georgia Tech.",
   location: "Farmington Hills, MI",
   availability: true,
