@@ -4,6 +4,7 @@ import { RESUME_DATA } from '../constants';
 const Timeline: React.FC = () => {
   const [animate, setAnimate] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [hasAnimatedIn, setHasAnimatedIn] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setAnimate(true), 500);
@@ -110,6 +111,19 @@ const Timeline: React.FC = () => {
     return items;
   }, [events, startYear, totalDuration]);
 
+  // Only use staggered transition delays for the initial "pop-in" animation.
+  // After that, remove delays so hover feels instant.
+  useEffect(() => {
+    if (!animate) {
+      setHasAnimatedIn(false);
+      return;
+    }
+    const count = positionedEvents.length;
+    const lastDelayMs = Math.max(0, (count - 1) * 150);
+    const timer = window.setTimeout(() => setHasAnimatedIn(true), lastDelayMs + 350);
+    return () => window.clearTimeout(timer);
+  }, [animate, positionedEvents.length]);
+
   return (
     <div className="w-full mt-10 mb-8 opacity-0 animate-fade-in overflow-visible" style={{ animationFillMode: 'forwards' }}>
       {/* Year annotations: only show years that exist in Education/Experience periods */}
@@ -177,7 +191,7 @@ const Timeline: React.FC = () => {
               {/* Dot (with slightly larger hit-area for easier hover) */}
               <div className="absolute inset-0 -m-2" aria-hidden="true" />
               <div 
-                className={`w-3 h-3 rounded-full border-2 transition-all duration-300 z-10 relative cursor-pointer
+                className={`w-3 h-3 rounded-full border-2 transition-all duration-150 z-10 relative cursor-pointer
                   ${animate ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}
                   ${isHovered 
                     ? (isEducation ? 'bg-emerald-400 border-emerald-400 scale-125' : 'bg-accent border-accent scale-125')
@@ -185,14 +199,14 @@ const Timeline: React.FC = () => {
                   }
                   ${!isHovered && hoveredIndex !== null ? 'opacity-50' : 'opacity-100'}
                 `}
-                style={{ transitionDelay: `${animDelayMs}ms` }}
+                style={{ transitionDelay: hasAnimatedIn ? '0ms' : `${animDelayMs}ms` }}
               />
               
               {/* Tooltip */}
               <div 
                 className={`absolute bottom-full mb-3 ${tooltipPosClass} w-max max-w-[220px] 
                   px-3 py-2 bg-zinc-900 text-zinc-200 text-xs rounded-lg border border-zinc-800 shadow-xl
-                  transition-all duration-200 z-50 pointer-events-none origin-bottom
+                  transition-all duration-120 z-50 pointer-events-none origin-bottom
                   ${isHovered ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 translate-y-2'}
                 `}
               >
