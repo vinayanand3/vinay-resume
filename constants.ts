@@ -2,15 +2,18 @@ import { ResumeData } from './types';
 
 export const RESUME_DATA: ResumeData = {
   name: "Vinay Anand Bhaskarla",
-  title: "Design Engineer | OMSCS Student",
+  title: "Mechanical Design Engineer | Georgia Tech Student",
   bio: "Design Engineer with 10+ years in Automotive (BIW, Product Design). Proficient in CAD (Catia/NX) and Python for engineering automation. Currently pursuing a Master's in Computer Science at Georgia Tech.",
   location: "Farmington Hills, MI",
   availability: true,
+  // Keep resume link for the "View Full Resume" CTA (works on both / and /preview/ because it's relative)
+  resumeUrl: "Vinay_Bhaskarla_Resume.pdf",
   socials: [
     { platform: "GitHub", url: "https://github.com/vinayanand3", iconName: "Github" },
     { platform: "LinkedIn", url: "https://linkedin.com/in/vinayanand2", iconName: "Linkedin" },
     { platform: "Email", url: "mailto:vinayanand2@gmail.com", iconName: "Mail" },
-    { platform: "Resume", url: "/vinay-resume/Vinay_Bhaskarla_Resume.pdf", iconName: "FileText" }
+    // This icon now links to your project journey PDF (resume is available via "View Full Resume")
+    { platform: "Professional Journey", url: "projects/professional_journey.pdf", iconName: "FileText" }
   ],
   experience: [
     {
@@ -19,7 +22,8 @@ export const RESUME_DATA: ResumeData = {
       role: "Design Release Engineer (Materials)",
       period: "Sep 2024 — Present",
       description: "Leading flex sourcing strategies for materials to drive cost savings. Developed Python tools to automate mechanical property and chemistry comparisons between flat steel grades. Working on steel coil width optimization to reduce scrap.",
-      technologies: ["NX11", "Catia V5", "Python", "DVPR", "Material Science"]
+      technologies: ["NX11", "Catia V5", "Python", "DVPR", "Material Science"],
+      projectId: "proj-1"
     },
     {
       id: "exp-2",
@@ -27,7 +31,8 @@ export const RESUME_DATA: ResumeData = {
       role: "Senior Mechanical Design Engineer",
       period: "May 2021 — Sep 2024",
       description: "Engineered BIW structure fasteners, sealers, B-pillars, and bumper beams for RPV and R1T programs. Created strategies for commonizing welds/SPRs and managed PLM data in Enovia. Provided on-site plant support in Normal, IL.",
-      technologies: ["Catia V6 (3DX)", "Enovia", "DFM", "GD&T", "Jira"]
+      technologies: ["Catia V6 (3DX)", "Enovia", "DFM", "GD&T", "Jira"],
+      projectId: "proj-2"
     },
     {
       id: "exp-3",
@@ -35,7 +40,8 @@ export const RESUME_DATA: ResumeData = {
       role: "Product Engineer",
       period: "Mar 2019 — May 2020",
       description: "Designed steering columns for RAM trucks and cross-car beams for JEEP Wrangler. Optimized upper I-shaft designs using DFSS (Red X, Green Y) to resolve warranty issues and manufacturing constraints.",
-      technologies: ["NX11", "Catia V5", "Teamcenter", "DFSS", "Root Cause Analysis"]
+      technologies: ["NX11", "Catia V5", "Teamcenter", "DFSS", "Root Cause Analysis"],
+      projectId: "proj-3"
     },
     {
       id: "exp-4",
@@ -43,7 +49,8 @@ export const RESUME_DATA: ResumeData = {
       role: "Product Engineer",
       period: "Aug 2015 — Mar 2019",
       description: "Designed B-pillar sheet metal brackets and floor panel reinforcements for Ford F150 (Electric) and Mondeo EU. Performed motion mapping for steering columns using KBE tools.",
-      technologies: ["Catia V5", "Teamcenter", "Vismockup", "KBE", "Sheet Metal"]
+      technologies: ["Catia V5", "Teamcenter", "Vismockup", "KBE", "Sheet Metal"],
+      projectId: "proj-4"
     },
     {
       id: "exp-6",
@@ -59,7 +66,8 @@ export const RESUME_DATA: ResumeData = {
       role: "Research Engineer",
       period: "Sep 2010 — Dec 2013",
       description: "Designed BIW structure parts (underbody, rear floor, dash panel) for i10/i20 projects. Performed digital pre-assembly checks and reverse engineering from 3D scan data.",
-      technologies: ["Catia V5", "Reverse Engineering", "Cost Reduction", "PLM"]
+      technologies: ["Catia V5", "Reverse Engineering", "Cost Reduction", "PLM"],
+      projectId: "proj-5"
     }
   ],
   education: [

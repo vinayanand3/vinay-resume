@@ -65,29 +65,168 @@ const SectionHeader: React.FC<{ title: string }> = ({ title }) => (
   </h2>
 );
 
-const ExperienceCard: React.FC<{ job: Experience }> = ({ job }) => (
-  <div className="group relative grid grid-cols-1 md:grid-cols-8 gap-4 mb-12 transition-all">
-    <div className="md:col-span-2 text-xs text-zinc-500 font-medium uppercase tracking-wide mt-1">
-      {job.period}
-    </div>
-    <div className="md:col-span-6">
-      <h3 className="font-medium text-zinc-100 text-lg group-hover:text-accent transition-colors flex items-center gap-2">
-        {job.role}
-        <span className="text-zinc-500 font-normal text-base"> — {job.company}</span>
-      </h3>
-      <p className="mt-2 text-zinc-400 leading-relaxed text-sm">
-        {job.description}
+const ProjectStory: React.FC<{ project: Project }> = ({ project }) => {
+  const [imageSrc, setImageSrc] = useState(project.image || '');
+  const [imageError, setImageError] = useState(false);
+  const [triedAltImage, setTriedAltImage] = useState(false);
+
+  useEffect(() => {
+    setImageSrc(project.image || '');
+    setImageError(false);
+    setTriedAltImage(false);
+  }, [project.image]);
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-start justify-between gap-3">
+        <h4 className="text-base font-semibold text-zinc-100 leading-snug">
+          {project.title}
+        </h4>
+        <div className="hidden md:flex flex-wrap gap-1 justify-end">
+          {project.technologies.slice(0, 6).map((tech) => (
+            <span
+              key={tech}
+              className="px-2 py-0.5 text-[10px] rounded-full bg-zinc-800/60 text-zinc-300 border border-zinc-700"
+            >
+              {tech}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <p className="text-sm text-zinc-400 leading-relaxed">
+        {project.description}
       </p>
-      <div className="mt-4 flex flex-wrap gap-2">
-        {job.technologies.map(tech => (
-          <span key={tech} className="px-2.5 py-1 text-xs rounded-full bg-zinc-800/50 text-accent border border-zinc-800/50">
-            {tech}
-          </span>
-        ))}
+
+      {/* Project image (shown after the description) */}
+      {imageSrc && !imageError ? (
+        <div className="rounded-xl border border-zinc-800 bg-zinc-900/30 overflow-hidden">
+          <img
+            src={imageSrc}
+            alt={project.title}
+            loading="lazy"
+            decoding="async"
+            className="w-full max-h-[420px] object-cover"
+            onError={() => {
+              if (!triedAltImage && imageSrc && !imageSrc.includes('_1.')) {
+                setTriedAltImage(true);
+                setImageSrc(imageSrc.replace(/(\.[a-zA-Z0-9]+)$/, '_1$1'));
+                return;
+              }
+              setImageError(true);
+            }}
+          />
+        </div>
+      ) : (
+        <div className="rounded-xl border border-zinc-800 bg-gradient-to-br from-zinc-800 to-zinc-900 h-40 w-full" />
+      )}
+
+      {project.details && project.details.length > 0 && (
+        <div className="space-y-3 text-sm text-zinc-400 leading-relaxed">
+          {project.details.map((paragraph, idx) => (
+            <p key={idx}>{paragraph}</p>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const ExperienceCard: React.FC<{
+  job: Experience;
+  project?: Project;
+  expanded: boolean;
+  onToggle: () => void;
+}> = ({ job, project, expanded, onToggle }) => {
+  const [thumbSrc, setThumbSrc] = useState(project?.image || '');
+  const [thumbError, setThumbError] = useState(false);
+  const [thumbTriedAlt, setThumbTriedAlt] = useState(false);
+
+  useEffect(() => {
+    setThumbSrc(project?.image || '');
+    setThumbError(false);
+    setThumbTriedAlt(false);
+  }, [project?.image]);
+
+  return (
+    <div className="group relative grid grid-cols-1 md:grid-cols-8 gap-4 mb-12 transition-all">
+      <div className="md:col-span-2 text-xs text-zinc-500 font-medium uppercase tracking-wide mt-1">
+        <div>{job.period}</div>
+
+        {/* Small thumbnail under the dates */}
+        {project?.image && (
+          <div className="mt-3 w-32 md:w-full">
+            <div className="rounded border border-zinc-800 bg-zinc-900 overflow-hidden h-16 md:h-20 w-full">
+              {!thumbSrc || thumbError ? (
+                <div className="w-full h-full bg-gradient-to-br from-zinc-800 to-zinc-900" />
+              ) : (
+                <img
+                  src={thumbSrc}
+                  alt={project.title}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-full object-cover opacity-80"
+                  onError={() => {
+                    if (!thumbTriedAlt && thumbSrc && !thumbSrc.includes('_1.')) {
+                      setThumbTriedAlt(true);
+                      setThumbSrc(thumbSrc.replace(/(\.[a-zA-Z0-9]+)$/, '_1$1'));
+                      return;
+                    }
+                    setThumbError(true);
+                  }}
+                />
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="md:col-span-6">
+        <h3 className="font-medium text-zinc-100 text-lg group-hover:text-accent transition-colors flex items-center gap-2">
+          {job.role}
+          <span className="text-zinc-500 font-normal text-base"> — {job.company}</span>
+        </h3>
+
+        <p className="mt-2 text-zinc-400 leading-relaxed text-sm">
+          {job.description}
+        </p>
+
+        <div className="mt-4 flex flex-wrap gap-2">
+          {job.technologies.map((tech) => (
+            <span
+              key={tech}
+              className="px-2.5 py-1 text-xs rounded-full bg-zinc-800/50 text-accent border border-zinc-800/50"
+            >
+              {tech}
+            </span>
+          ))}
+        </div>
+
+        {/* Expand button */}
+        {project && (
+          <div className="mt-5">
+            <button
+              type="button"
+              onClick={onToggle}
+              className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-zinc-500 hover:text-zinc-200 transition-colors"
+              aria-expanded={expanded}
+            >
+              <ArrowRight className={`h-3 w-3 transition-transform ${expanded ? 'rotate-90' : ''}`} />
+              {expanded ? 'Collapse project details' : 'Expand for project details'}
+            </button>
+          </div>
+        )}
+
+        {/* Expanded project details */}
+        {project && expanded && (
+          <div className="mt-5 pt-5 border-t border-zinc-800/60">
+            <ProjectStory project={project} />
+          </div>
+        )}
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const EducationCard: React.FC<{ education: Education }> = ({ education }) => (
   <div className="group relative grid grid-cols-1 md:grid-cols-8 gap-4 mb-12 transition-all">
@@ -103,166 +242,34 @@ const EducationCard: React.FC<{ education: Education }> = ({ education }) => (
   </div>
 );
 
-const ProjectCard: React.FC<{ project: Project; onSelect: (project: Project) => void }> = ({ project, onSelect }) => {
-  const [imageSrc, setImageSrc] = useState(project.image || '');
-  const [imageError, setImageError] = useState(false);
-  const [triedAltImage, setTriedAltImage] = useState(false);
-
-  useEffect(() => {
-    setImageSrc(project.image || '');
-    setImageError(false);
-    setTriedAltImage(false);
-  }, [project.image]);
-  
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onSelect(project);
-  };
-
-  return (
-    <button
-      type="button"
-      onClick={handleClick}
-      className="group block w-full text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent/50"
-    >
-      <div className="relative grid grid-cols-1 md:grid-cols-8 gap-4 mb-12 hover:bg-zinc-900/40 p-0 md:-mx-4 md:p-4 rounded-lg transition-all border border-transparent hover:border-zinc-800/50">
-      <div className="md:col-span-2 mt-1">
-        <div className="rounded border border-zinc-800 bg-zinc-900 overflow-hidden h-20 w-32 md:w-full md:h-24 relative">
-          {/* Placeholder for image - using a subtle gradient if image fails or just as style */}
-          {!imageSrc || imageError ? (
-            <div className="w-full h-full bg-gradient-to-br from-zinc-800 to-zinc-900" />
-          ) : (
-            <img
-              src={imageSrc}
-              alt={project.title}
-              loading="lazy"
-              decoding="async"
-              className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity"
-              onError={() => {
-                // If the cached bundle is still pointing at the old filename, try the *_1 variant once.
-                if (!triedAltImage && !imageSrc.includes('_1.')) {
-                  setTriedAltImage(true);
-                  setImageSrc(imageSrc.replace(/(\.[a-zA-Z0-9]+)$/, '_1$1'));
-                  return;
-                }
-                setImageError(true);
-              }}
-            />
-          )}
-        </div>
-      </div>
-      <div className="md:col-span-6">
-        <h3 className="font-medium text-zinc-100 text-lg group-hover:text-accent transition-colors flex items-center gap-2">
-          {project.title}
-          <ArrowRight size={16} className="-translate-x-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-accent" />
-        </h3>
-        <p className="mt-2 text-zinc-400 leading-relaxed text-sm">
-          {project.description}
-        </p>
-        <div className="mt-4 flex flex-wrap gap-2">
-          {project.technologies.map(tech => (
-            <span key={tech} className="px-2.5 py-1 text-xs rounded-full bg-zinc-800/50 text-zinc-300 border border-zinc-800/50 group-hover:border-accent/20 group-hover:text-accent transition-colors">
-              {tech}
-            </span>
-          ))}
-        </div>
-      </div>
-    </div>
-  </button>
-  );
-};
-
-const ProjectDetail: React.FC<{ project: Project; onBack: () => void }> = ({ project, onBack }) => {
-  const [imageSrc, setImageSrc] = useState(project.image || '');
-  const [imageError, setImageError] = useState(false);
-  const [triedAltImage, setTriedAltImage] = useState(false);
-
-  useEffect(() => {
-    setImageSrc(project.image || '');
-    setImageError(false);
-    setTriedAltImage(false);
-  }, [project.image]);
-
-  return (
-    <article className="space-y-6">
-    <button
-      type="button"
-      onClick={onBack}
-      className="mb-4 inline-flex items-center text-xs uppercase tracking-widest text-zinc-500 hover:text-zinc-200 transition-colors"
-    >
-      <ArrowRight className="mr-1 h-3 w-3 rotate-180" />
-      Back to projects
-    </button>
-
-    <h3 className="text-xl font-semibold text-zinc-100 flex items-center gap-3">
-      {project.title}
-      <span className="inline-flex flex-wrap gap-1">
-        {project.technologies.map((tech) => (
-          <span
-            key={tech}
-            className="px-2 py-0.5 text-[11px] rounded-full bg-zinc-800/60 text-zinc-300 border border-zinc-700"
-          >
-            {tech}
-          </span>
-        ))}
-      </span>
-    </h3>
-
-    <p className="text-sm text-zinc-400 leading-relaxed">
-      {project.description}
-    </p>
-
-    {/* Project image (shown after the description) */}
-    {imageSrc && !imageError ? (
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900/30 overflow-hidden">
-        <img
-          src={imageSrc}
-          alt={project.title}
-          loading="lazy"
-          decoding="async"
-          className="w-full max-h-[420px] object-cover"
-          onError={() => {
-            if (!triedAltImage && !imageSrc.includes('_1.')) {
-              setTriedAltImage(true);
-              setImageSrc(imageSrc.replace(/(\.[a-zA-Z0-9]+)$/, '_1$1'));
-              return;
-            }
-            setImageError(true);
-          }}
-        />
-      </div>
-    ) : (
-      <div className="rounded-xl border border-zinc-800 bg-gradient-to-br from-zinc-800 to-zinc-900 h-48 w-full" />
-    )}
-
-    {project.details && project.details.length > 0 && (
-      <div className="space-y-4 text-sm text-zinc-400 leading-relaxed">
-        {project.details.map((paragraph, idx) => (
-          <p key={idx}>{paragraph}</p>
-        ))}
-      </div>
-    )}
-    </article>
-  );
-};
+// (Projects are now embedded under Professional Experience; no standalone Project section/components.)
 
 // -- Main App Component --
 
 export default function App() {
   const [activeSection, setActiveSection] = useState('about');
   const isDesktop = useMediaQuery('(min-width: 1024px)');
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [expandedExperienceId, setExpandedExperienceId] = useState<string | null>(null);
 
   // On desktop, move Education into the left column for a cleaner right side.
   // On smaller screens, keep Education in the main scrollable content.
   const sectionIds = useMemo(
-    () => (isDesktop ? (['about', 'experience', 'projects'] as const) : (['about', 'experience', 'education', 'projects'] as const)),
+    () => (isDesktop ? (['about', 'experience'] as const) : (['about', 'experience', 'education'] as const)),
     [isDesktop]
   );
 
   const sortedEducation = useMemo(() => {
     return [...RESUME_DATA.education].sort((a, b) => getSortYear(b.period) - getSortYear(a.period));
+  }, []);
+
+  const projectsById = useMemo(() => {
+    const map = new Map<string, Project>();
+    RESUME_DATA.projects.forEach((p) => map.set(p.id, p));
+    return map;
+  }, []);
+
+  const sortedExperiences = useMemo(() => {
+    return [...RESUME_DATA.experience].sort((a, b) => getSortYear(b.period) - getSortYear(a.period));
   }, []);
 
   // Use IntersectionObserver instead of scroll listeners (less main-thread churn).
@@ -300,7 +307,7 @@ export default function App() {
   }, []);
 
   const resumeUrl = useMemo(
-    () => RESUME_DATA.socials.find((s) => s.platform === 'Resume')?.url || '#',
+    () => RESUME_DATA.resumeUrl || '#',
     []
   );
 
@@ -319,7 +326,7 @@ export default function App() {
               <h2 className="mt-3 text-lg font-medium text-zinc-100 tracking-tight sm:text-xl">
                 {RESUME_DATA.title}
               </h2>
-              <p className="mt-4 max-w-xs leading-normal text-zinc-400">
+              <p className="mt-3 max-w-sm sm:max-w-md lg:max-w-lg leading-normal text-zinc-400">
                 {RESUME_DATA.bio}
               </p>
 
@@ -421,32 +428,20 @@ export default function App() {
             <section id="experience" className="mb-16 scroll-mt-16 md:mb-24 lg:mb-36 lg:scroll-mt-24">
               <SectionHeader title="Professional Experience" />
               <div>
-                {(() => {
-                  // Helper function to extract sort year from period string
-                  // Uses the last year in the period (end year) for proper chronological sorting
-                  const getSortYear = (period: string): number => {
-                    // Check if period contains "Present" - use current year for sorting
-                    if (period.includes('Present')) {
-                      const years = period.match(/\d{4}/g);
-                      // If there's a year before "Present", use it; otherwise use current year
-                      return years && years.length > 0 ? parseInt(years[years.length - 1]) : new Date().getFullYear();
-                    }
-                    // Extract all years and use the last one (end year)
-                    const years = period.match(/\d{4}/g);
-                    return years && years.length > 0 ? parseInt(years[years.length - 1]) : 0;
-                  };
-                  
-                  // Sort experiences by date (descending - most recent first)
-                  const sortedExperiences = [...RESUME_DATA.experience].sort((a, b) => {
-                    const yearA = getSortYear(a.period);
-                    const yearB = getSortYear(b.period);
-                    return yearB - yearA;
-                  });
-                  
-                  return sortedExperiences.map(exp => (
-                    <ExperienceCard key={exp.id} job={exp} />
-                  ));
-                })()}
+                {sortedExperiences.map((exp) => {
+                  const project = exp.projectId ? projectsById.get(exp.projectId) : undefined;
+                  const expanded = expandedExperienceId === exp.id;
+
+                  return (
+                    <ExperienceCard
+                      key={exp.id}
+                      job={exp}
+                      project={project}
+                      expanded={expanded}
+                      onToggle={() => setExpandedExperienceId(expanded ? null : exp.id)}
+                    />
+                  );
+                })}
               </div>
               <a href={resumeUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center font-medium leading-tight text-zinc-100 font-semibold group" aria-label="View Full Resume">
                 <span className="border-b border-transparent pb-px transition group-hover:border-accent motion-reduce:transition-none">
@@ -468,26 +463,7 @@ export default function App() {
               </section>
             )}
 
-            {/* PROJECTS */}
-            <section id="projects" className="mb-16 scroll-mt-16 md:mb-24 lg:mb-36 lg:scroll-mt-24">
-              <SectionHeader title={selectedProject ? "Project Details" : "Projects"} />
-              <div>
-                {selectedProject ? (
-                  <ProjectDetail project={selectedProject} onBack={() => setSelectedProject(null)} />
-                ) : (
-                  RESUME_DATA.projects.map(project => (
-                    <ProjectCard key={project.id} project={project} onSelect={setSelectedProject} />
-                  ))
-                )}
-              </div>
-            </section>
-            
-            {/* FOOTER */}
-            <footer className="max-w-md pb-16 text-sm text-zinc-500 sm:pb-0">
-              <p>
-                Built with <span className="text-zinc-400">React</span> and <span className="text-zinc-400">Tailwind CSS</span>.
-              </p>
-            </footer>
+            {/* FOOTER (intentionally empty) */}
 
           </main>
         </div>

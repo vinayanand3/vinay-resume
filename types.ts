@@ -11,6 +11,8 @@ export interface Experience {
   period: string;
   description: string;
   technologies: string[];
+  // Optional link to a project story (used to embed project details under experience)
+  projectId?: string;
 }
 
 export interface Education {
@@ -43,6 +45,8 @@ export interface ResumeData {
   bio: string;
   location: string;
   availability: boolean;
+  // Used by "View Full Resume" link (kept separate from socials/icons)
+  resumeUrl: string;
   socials: SocialLink[];
   experience: Experience[];
   education: Education[];
