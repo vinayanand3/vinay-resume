@@ -94,7 +94,15 @@ const EducationCard: React.FC<{ education: Education }> = ({ education }) => (
 );
 
 const ProjectCard: React.FC<{ project: Project; onSelect: (project: Project) => void }> = ({ project, onSelect }) => {
+  const [imageSrc, setImageSrc] = useState(project.image || '');
   const [imageError, setImageError] = useState(false);
+  const [triedAltImage, setTriedAltImage] = useState(false);
+
+  useEffect(() => {
+    setImageSrc(project.image || '');
+    setImageError(false);
+    setTriedAltImage(false);
+  }, [project.image]);
   
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -112,17 +120,22 @@ const ProjectCard: React.FC<{ project: Project; onSelect: (project: Project) => 
       <div className="md:col-span-2 mt-1">
         <div className="rounded border border-zinc-800 bg-zinc-900 overflow-hidden h-20 w-32 md:w-full md:h-24 relative">
           {/* Placeholder for image - using a subtle gradient if image fails or just as style */}
-          {!project.image || imageError ? (
+          {!imageSrc || imageError ? (
             <div className="w-full h-full bg-gradient-to-br from-zinc-800 to-zinc-900" />
           ) : (
             <img
-              src={project.image}
+              src={imageSrc}
               alt={project.title}
               loading="lazy"
               decoding="async"
               className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity"
               onError={() => {
-                // Silently handle image errors - don't log to console
+                // If the cached bundle is still pointing at the old filename, try the *_1 variant once.
+                if (!triedAltImage && !imageSrc.includes('_1.')) {
+                  setTriedAltImage(true);
+                  setImageSrc(imageSrc.replace(/(\.[a-zA-Z0-9]+)$/, '_1$1'));
+                  return;
+                }
                 setImageError(true);
               }}
             />
@@ -151,7 +164,15 @@ const ProjectCard: React.FC<{ project: Project; onSelect: (project: Project) => 
 };
 
 const ProjectDetail: React.FC<{ project: Project; onBack: () => void }> = ({ project, onBack }) => {
+  const [imageSrc, setImageSrc] = useState(project.image || '');
   const [imageError, setImageError] = useState(false);
+  const [triedAltImage, setTriedAltImage] = useState(false);
+
+  useEffect(() => {
+    setImageSrc(project.image || '');
+    setImageError(false);
+    setTriedAltImage(false);
+  }, [project.image]);
 
   return (
     <article className="space-y-6">
@@ -183,15 +204,22 @@ const ProjectDetail: React.FC<{ project: Project; onBack: () => void }> = ({ pro
     </p>
 
     {/* Project image (shown after the description) */}
-    {project.image && !imageError ? (
+    {imageSrc && !imageError ? (
       <div className="rounded-xl border border-zinc-800 bg-zinc-900/30 overflow-hidden">
         <img
-          src={project.image}
+          src={imageSrc}
           alt={project.title}
           loading="lazy"
           decoding="async"
           className="w-full max-h-[420px] object-cover"
-          onError={() => setImageError(true)}
+          onError={() => {
+            if (!triedAltImage && !imageSrc.includes('_1.')) {
+              setTriedAltImage(true);
+              setImageSrc(imageSrc.replace(/(\.[a-zA-Z0-9]+)$/, '_1$1'));
+              return;
+            }
+            setImageError(true);
+          }}
         />
       </div>
     ) : (
