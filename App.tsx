@@ -268,6 +268,15 @@ export default function App() {
                 {RESUME_DATA.bio}
               </p>
 
+              {/* Timeline Animation (Desktop) */}
+              {isDesktop && (
+                <div className="hidden lg:block mt-10">
+                  <Suspense fallback={<div className="mb-8 pr-8 h-12" />}>
+                    <LazyTimeline />
+                  </Suspense>
+                </div>
+              )}
+
               {/* Navigation (Desktop) */}
               <nav className="nav hidden lg:block mt-16" aria-label="In-page jump links">
                 <ul className="w-max">
@@ -286,15 +295,6 @@ export default function App() {
                   ))}
                 </ul>
               </nav>
-
-              {/* Timeline Animation */}
-              {isDesktop && (
-                <div className="hidden lg:block">
-                  <Suspense fallback={<div className="mt-10 mb-8 pr-8 h-12" />}>
-                    <LazyTimeline />
-                  </Suspense>
-                </div>
-              )}
             </div>
 
             {/* Socials & Resume */}
