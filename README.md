@@ -1,20 +1,78 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Vinay Anand Bhaskarla — Interactive Resume
 
-# Run and deploy your AI Studio app
+This repository contains the source code for my **interactive resume / portfolio site**, built with **React + TypeScript + Vite + Tailwind CSS**, and deployed on **GitHub Pages**.
 
-This contains everything you need to run your app locally.
+## Live
 
-View your app in AI Studio: https://ai.studio/apps/drive/1A7ltjQOXvCo8ispQnG_4OPajAVybXret
+- **Stable**: `https://vinayanand3.github.io/vinay-resume/`
+- **Preview** (optional, published under a sub-path): `https://vinayanand3.github.io/vinay-resume/preview/`
 
-## Run Locally
+## Tech stack
 
-**Prerequisites:**  Node.js
+- React 18 + TypeScript
+- Vite
+- Tailwind CSS
+- GitHub Pages deploy via `gh-pages`
 
+## Getting started (local dev)
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+```bash
+npm install
+npm run dev
+```
+
+Vite will print the local URL in the terminal.
+
+## Build
+
+```bash
+npm run build
+```
+
+## Deploy (GitHub Pages)
+
+This repo deploys the built site to the **`gh-pages`** branch.
+
+### One command (stable + preview together)
+
+```bash
+npm run deploy
+```
+
+This publishes:
+- `/vinay-resume/` (stable)
+- `/vinay-resume/preview/` (preview)
+
+### Preview only
+
+```bash
+npm run deploy:preview
+```
+
+## Where to edit content
+
+- **Resume data (experience, education, projects, skills)**: `constants.ts`
+- **Main layout + sections**: `App.tsx`
+- **Timeline component**: `components/Timeline.tsx`
+
+## Assets / PDFs / images
+
+- **Resume PDF (for “View Full Resume”)**: `public/Vinay_Bhaskarla_Resume.pdf`
+- **Professional Journey PDF (header icon)**: `public/projects/professional_journey.pdf`
+- **Project images**: `public/projects/<project-folder>/...`
+
+When adding/changing images, keep filenames URL-safe (no spaces) to avoid GitHub Pages caching/encoding issues.
+
+## GitHub Pages settings
+
+In GitHub: **Settings → Pages**
+- Source: **Deploy from a branch**
+- Branch: **`gh-pages`**
+- Folder: **`/ (root)`**
+
+## Notes
+
+- The `gh-pages` branch is **generated build output**. Don’t hand-edit it.
+- If you don’t see a freshly deployed change immediately, it’s usually caching. Try:
+  - Hard refresh (Cmd+Shift+R), or
+  - Open `index.html` directly with a cache-busting query, e.g. `.../index.html?nocache=1`.
