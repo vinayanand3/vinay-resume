@@ -11,6 +11,8 @@ export interface Experience {
   period: string;
   description: string;
   technologies: string[];
+  // Optional link to a project story (used to embed project details under experience)
+  projectId?: string;
 }
 
 export interface Education {
