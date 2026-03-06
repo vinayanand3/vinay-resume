@@ -8,6 +8,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
+    "test": "echo \"No tests specified\" && exit 0",
     "predeploy": "npm run build",
     "deploy": "npm run deploy:all",
     "build:preview": "VITE_BASE=/vinay-resume/preview/ npm run build",
